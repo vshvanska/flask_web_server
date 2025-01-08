@@ -7,6 +7,5 @@ from.enums import VerdictEnum
 class SourceRecord(Base):
     __tablename__ = "sources"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    domain: Mapped[str] = mapped_column(String(150), nullable=False)
+    domain: Mapped[str] = mapped_column(String(150), nullable=False, primary_key=True)
     verdict: Mapped[VerdictEnum]
