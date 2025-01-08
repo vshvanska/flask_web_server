@@ -1,1 +1,1 @@
-from .sources import SourceSchema
+from .sources_schemas import SourceSchema

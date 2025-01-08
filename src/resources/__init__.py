@@ -1,1 +1,1 @@
-from src.resources.sources import SourceResource
+from src.resources.sources_resource import SourceResource
