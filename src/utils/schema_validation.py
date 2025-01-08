@@ -1,4 +1,6 @@
 from functools import wraps
+from flask import request, abort
+from marshmallow import ValidationError
 
 
 def validate_schema(schema_cls):
@@ -10,8 +12,12 @@ def validate_schema(schema_cls):
     """
     def decorator(func):
         @wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(self, *args, **kwargs):
             schema = schema_cls()
-            return func()
+            try:
+               data = schema.load(dict(request.values))
+               return func(self, data)
+            except ValidationError as e:
+                abort(400, e.messages)
         return wrapper
     return decorator

@@ -1,19 +1,16 @@
-from flask import abort, request
+from flask import abort
 from flask.views import MethodView
 from sqlalchemy.exc import SQLAlchemyError
 from src.database import db_session
 from src.schemas import SourceSchema
 from ..models import SourceRecord
+from ..utils.schema_validation import validate_schema
 
 
 class SourceResource(MethodView):
-
-    def post(self):
-        """
-
-        :return:
-        """
-        source = SourceRecord(domain=request.values.get('domain'), verdict=request.values.get('verdict'))
+    @validate_schema(SourceSchema)
+    def post(self, data: dict):
+        source = SourceRecord(**data)
         try:
             db_session.add(source)
             db_session.commit()
