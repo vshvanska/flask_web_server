@@ -1,8 +1,8 @@
 from re import match, findall
 from marshmallow import ValidationError
 from sqlalchemy.exc import SQLAlchemyError
-from src.database import db_session
-from src.models import SourceRecord
+from app.database import db_session
+from app.models import SourceRecord
 
 
 class SourceRepository:

@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields
 from marshmallow.validate import OneOf
 
-from src.enums import VerdictEnum
+from app.enums import VerdictEnum
 
 
 class SourceSchema(Schema):

@@ -1,6 +1,8 @@
 from flask import Flask
-from src.resources import SourceResource
+from .resources import SourceResource
 from .database import init_db
+
+
 
 
 def create_app():

@@ -2,7 +2,7 @@ from flask import abort, Response
 from flask.views import MethodView
 from marshmallow import ValidationError
 
-from src.schemas import SourceSchema
+from app.schemas import SourceSchema
 from .source_repository import SourceRepository
 from ..utils.schema_validation import validate_schema
 
