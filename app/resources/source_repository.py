@@ -1,6 +1,6 @@
 from re import match, findall
 from marshmallow import ValidationError
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from app.database import db_session
 from app.models import SourceRecord
 
@@ -13,7 +13,13 @@ class SourceRepository:
     def create_instance(self, data):
         url = data.get('domain')
         self.validate_url(url)
-        source = SourceRecord(domain=self.get_domain(url), verdict=data.get('verdict'))
+        domain = self.get_domain(url)
+
+        existing_instance = self.get_instance(domain)
+        if existing_instance:
+            raise ValidationError("A source record already exists for this domain.")
+
+        source = SourceRecord(domain=domain, verdict=data.get('verdict'))
         try:
             db_session.add(source)
             db_session.commit()
@@ -22,10 +28,21 @@ class SourceRepository:
             raise RuntimeError(str(e))
         return source
 
+    def get_instance(self, domain):
+        instance = db_session.query(SourceRecord).filter_by(domain=domain).first()
+        return instance
+
+    def delete_instance(self, domain):
+        instance = self.get_instance(domain)
+        if not instance:
+            raise ValidationError("A source record with this domain does not exist.")
+        db_session.delete(instance)
+        db_session.commit()
+
     def validate_url(self, url):
         if not match(self.url_pattern, url):
             raise ValidationError("Invalid url pattern")
 
     def get_domain(self, url):
         match = findall(self.domain_pattern, url)
-        return match[0][1]   if match else None
+        return match[0][1]  if match else None

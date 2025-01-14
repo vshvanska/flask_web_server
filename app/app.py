@@ -1,5 +1,5 @@
 from flask import Flask
-from .resources import SourceResource
+from .resources import CreateSourceResource, SourceResource
 from .database import init_db
 
 
@@ -12,7 +12,8 @@ def create_app():
 
 
     init_db()
-    app.add_url_rule('/sources', view_func=SourceResource.as_view('my-view'))
+    app.add_url_rule('/sources', view_func=CreateSourceResource.as_view('create-source'))
+    app.add_url_rule('/sources/<string:domain>', view_func=SourceResource.as_view('source'))
 
     return app
 
