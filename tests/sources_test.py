@@ -11,7 +11,10 @@ class CreateSourceTestCase(TestCase):
             "TESTING": True,
         })
         self.client = self.app.test_client()
-        self.test_data = {"domain": "https://flask.palletsprojects.com/en/stable/testing/", "verdict": "malware"}
+        self.test_data = {
+            "domain": "https://flask.palletsprojects.com/en/stable/testing/",
+            "verdict": "malware"
+        }
         self.domain = "flask.palletsprojects.com"
 
     def test_create_source(self):
@@ -38,7 +41,6 @@ class CreateSourceTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         get_response = self.client.get(f"/sources/{self.domain}")
         self.assertEqual(get_response.status_code, 404)
-
 
     @classmethod
     def tearDownClass(cls):

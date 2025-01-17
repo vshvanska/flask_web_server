@@ -3,7 +3,7 @@ from flask import request, abort
 from marshmallow import ValidationError
 
 
-def validate_schema(schema_cls):
+def validate_request(schema_cls):
     """This is a decorator for Marshmallow sschema requests validation
 
     Args:
@@ -15,8 +15,8 @@ def validate_schema(schema_cls):
         def wrapper(self, *args, **kwargs):
             schema = schema_cls()
             try:
-               data = schema.load(dict(request.values))
-               return func(self, data)
+                data = schema.load(dict(request.values))
+                return func(self, data)
             except ValidationError as e:
                 abort(400, e.messages)
         return wrapper

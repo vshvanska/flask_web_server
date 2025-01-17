@@ -9,12 +9,15 @@ load_dotenv()
 test_mode = os.getenv("TEST_MODE")
 if test_mode:
     print("Test mode enabled")
-engine = create_engine(os.getenv("DATABASE_URL") if not os.getenv("TEST_MODE") else os.getenv("TEST_DATABASE_URL"))
+engine = create_engine(os.getenv("DATABASE_URL") if not os.getenv("TEST_MODE")
+                       else os.getenv("TEST_DATABASE_URL"))
+
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))
 Base = declarative_base()
 Base.query = db_session.query_property()
+
 
 def init_db():
     # import all modules here that might define models so that

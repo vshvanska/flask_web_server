@@ -1,6 +1,6 @@
 from re import match, findall
 from marshmallow import ValidationError
-from sqlalchemy.exc import SQLAlchemyError, IntegrityError
+from sqlalchemy.exc import SQLAlchemyError
 from app.database import db_session
 from app.models import SourceRecord
 
@@ -45,4 +45,4 @@ class SourceRepository:
 
     def get_domain(self, url):
         match = findall(self.domain_pattern, url)
-        return match[0][1]  if match else None
+        return match[0][1] if match else None
