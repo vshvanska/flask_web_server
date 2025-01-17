@@ -6,22 +6,37 @@ from sqlalchemy.orm import scoped_session, sessionmaker, declarative_base
 
 load_dotenv()
 
-test_mode = os.getenv("TEST_MODE")
-if test_mode:
-    print("Test mode enabled")
-engine = create_engine(os.getenv("DATABASE_URL") if not os.getenv("TEST_MODE")
-                       else os.getenv("TEST_DATABASE_URL"))
-
-db_session = scoped_session(sessionmaker(autocommit=False,
-                                         autoflush=False,
-                                         bind=engine))
+database_url = os.getenv("DATABASE_URL")
+test_database = os.getenv("TEST_DATABASE_URL")
 Base = declarative_base()
-Base.query = db_session.query_property()
 
 
-def init_db():
-    # import all modules here that might define models so that
-    # they will be registered properly on the metadata.  Otherwise
-    # you will have to import them first before calling init_db()
-    # import yourapplication.models
-    Base.metadata.create_all(bind=engine)
+class DatabaseSession:
+    _session = None
+    _engine = None
+
+    @classmethod
+    def create_engine(cls, database_url):
+        cls._engine = create_engine(database_url)
+        cls._session = scoped_session(sessionmaker(autocommit=False,
+                                         autoflush=False,
+                                         bind=cls._engine))
+        Base.metadata.bind = cls._engine
+
+    @classmethod
+    def get_session(cls):
+        if not cls._session:
+            raise RuntimeError("DatabaseSession not initialized")
+        return cls._session
+
+    @classmethod
+    def create_tables(cls):
+        if not cls._engine:
+            raise RuntimeError("DatabaseSession not initialized")
+        Base.metadata.create_all(cls._engine)
+
+    @classmethod
+    def drop_tables(cls):
+        if not cls._engine:
+            raise RuntimeError("DatabaseSession not initialized")
+        Base.metadata.drop_all(cls._engine)
