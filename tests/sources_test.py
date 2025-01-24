@@ -5,15 +5,16 @@ from app.models import SourceRecord
 
 
 class CreateSourceTestCase(TestCase):
-    def setUp(self):
-        self.app = create_app(test_mode=True)
-        self.client = self.app.test_client()
-        self.test_data = {
+    @classmethod
+    def setUpClass(cls):
+        cls.app = create_app(test_mode=True)
+        cls.client = cls.app.test_client()
+        cls.test_data = {
             "domain": "https://flask.palletsprojects.com/en/stable/testing/",
             "verdict": "malware"
         }
-        self.domain = "flask.palletsprojects.com"
-        self.session = DatabaseSession.get_session()
+        cls.domain = "flask.palletsprojects.com"
+        cls.session = DatabaseSession.get_session()
 
     def test_create_source(self):
         response = self.client.post("/sources", data=self.test_data)
@@ -33,6 +34,7 @@ class CreateSourceTestCase(TestCase):
         self.assertEqual(response_data["verdict"], self.test_data["verdict"])
 
     def test_delete_source(self):
+        self.client.post("/sources", data=self.test_data)
         response = self.client.delete(f"/sources/{self.domain}")
         self.assertEqual(response.status_code, 200)
         get_response = self.client.get(f"/sources/{self.domain}")

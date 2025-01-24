@@ -19,12 +19,12 @@ def create_app(test_mode=False):
     DatabaseSession.create_engine(database_url)
     DatabaseSession.create_tables()
 
-    #init_db()
     app.add_url_rule('/sources', view_func=CreateSourceResource.as_view('create-source'))
     app.add_url_rule('/sources/<string:domain>', view_func=SourceResource.as_view('source'))
 
     return app
 
+app = create_app()
 
 if __name__ == '__main__':
     app = create_app()

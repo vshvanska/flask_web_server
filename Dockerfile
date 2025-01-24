@@ -15,3 +15,4 @@ RUN chmod +x entrypoint.sh
 ENV FLASK_APP=app/app.py
 
 ENTRYPOINT ["./entrypoint.sh"]
+#ENTRYPOINT ["junicorn", "--bind", "0.0.0.0.:80", "app:create_app()"]

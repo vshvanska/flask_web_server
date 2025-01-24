@@ -8,4 +8,4 @@ do
   sleep 2
 done
 
-flask run --host 0.0.0.0
+exec gunicorn --bind 0.0.0.0:5000 app.app:app
